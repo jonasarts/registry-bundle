@@ -1,13 +1,13 @@
 <?php
 
-namespace ja\RegistryBundle;
+namespace jonasarts\Bundle\RegistryBundle;
 
 use Doctrine\ORM\EntityManager;
 
-use ja\RegistryBundle\Entity\Registry;
-use ja\RegistryBundle\Entity\RegistryBag;
-use ja\RegistryBundle\Entity\System;
-use ja\RegistryBundle\Entity\SystemBag;
+use jonasarts\Bundle\RegistryBundle\Entity\Registry;
+use jonasarts\Bundle\RegistryBundle\Entity\RegistryBag;
+use jonasarts\Bundle\RegistryBundle\Entity\System;
+use jonasarts\Bundle\RegistryBundle\Entity\SystemBag;
 
 use Symfony\Component\Yaml\Yaml;
 
