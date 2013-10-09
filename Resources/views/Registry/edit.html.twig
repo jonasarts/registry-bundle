@@ -1,0 +1,27 @@
+{% extends '::base.html.twig' %}
+
+{#% form_theme form 'jaCommonBundle:Form:fields.html.twig' %#}
+
+{% set EntityName = 'Registry' %}
+{% set entityName = EntityName|lower %}
+
+{% if action == 'create' %}
+{% set EntityActionTitle = 'New' %}
+{% else %}
+{% set EntityActionTitle = 'Edit' %}
+{% endif %}
+
+{% block title %}
+{{ EntityActionTitle }} {{ EntityName }} Key
+{% endblock %}
+
+{% block body %}
+<h1>{{ EntityActionTitle }} {{ EntityName }} Key</h1>
+
+<form action="{{ path( entityName ~ '_' ~ action, { 'id': entity.id }) }}" method="post" {{ form_enctype(form) }}>
+    <fieldset class="control-group">
+    {{ form_rest(form) }}
+    <p><button type="submit" class="btn btn-primary">Save</button> <a href="{{ path( entityName ) }}" class="btn">Cancel</a></p>
+    </fieldset>
+</form>
+{% endblock %}

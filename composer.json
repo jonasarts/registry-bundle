@@ -1,0 +1,24 @@
+{
+    "name": "jonasarts/registry-bundle",
+    "description": "A Registry for Symfony",
+    "keywords": ["registry", "key", "value", "store"],
+    "homepage": "https://github.com/jonasarts/registry-bundle",
+    "type": "symfony-bundle",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Jonas Hauser",
+            "email": "symfony@jonasarts.com",
+            "homepage": "http://www.jonasarts.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=5.3.0",
+        "symfony/framework-bundle": "~2.3"
+    },
+    "autoload": {
+        "psr-0": { "jonasarts\\Bundle\\RegistryBundle": "" }
+    },
+    "target-dir": "jonasarts/Bundle/RegistryBundle"
+}

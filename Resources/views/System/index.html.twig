@@ -1,0 +1,41 @@
+{% extends '::base.html.twig' %}
+
+{% set EntityName = 'System' %}
+{% set entityName = EntityName|lower %}
+
+{% block title %}
+{{ EntityName }} Key List
+{% endblock %}
+
+{% block body %}
+<h1>{{ EntityName }} Key List</h1>
+<p class="pull-right"><a href="{{ path('system_new') }}" class="btn btn-success">Add</a></p>
+<p>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Key</th>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Value</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for entity in entities %}
+        <tr>
+            <td>{{ entity.id }}</td>
+            <td>{{ entity.systemkey }}</td>
+            <td>{{ entity.name }}</td>
+            <td>{{ entity.type }}</td>
+            <td>{{ entity.value }}</td>
+            <td><a href="{{ path( 'system_edit', { id: entity.id }) }}" class="btn">Edit</a> <a href="{{ path( 'system_delete', { id: entity.id }) }}" class="btn">Delete</a></td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</p>
+
+
+{%endblock%}
