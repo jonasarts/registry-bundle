@@ -15,13 +15,13 @@ class SystemRepository extends EntityRepository
     public function findAllOrderedBySystemKey()
     {
         return $this->getEntityManager()
-            ->createQuery('SELECT s FROM jaRegistryBundle:System s ORDER BY s.systemkey ASC, s.name ASC')
+            ->createQuery('SELECT s FROM RegistryBundle:System s ORDER BY s.systemkey ASC, s.name ASC')
             ->getResult();
     }
     
     public function findAllWhere($column, $operator, $value)
     {
-        $repository = $this->getEntityManager()->getRepository('jaRegistryBundle:System');
+        $repository = $this->getEntityManager()->getRepository('RegistryBundle:System');
         
         $query = $repository->createQueryBuilder('s')
             ->where('s.'.$column.' '.$operator.' :param1')
@@ -38,7 +38,7 @@ class SystemRepository extends EntityRepository
      */
     public function findByPath($path)
     {
-        $repository = $this->getEntityManager()->getRepository('jaRegistryBundle:System');
+        $repository = $this->getEntityManager()->getRepository('RegistryBundle:System');
         
         $query = $repository->createQueryBuilder('s')
             ->where('s.systemkey LIKE :param1')
@@ -55,7 +55,7 @@ class SystemRepository extends EntityRepository
      */
     public function loadByPath($path)
     {
-        $repository = $this->getEntityManager()->getRepository('jaRegistryBundle:System');
+        $repository = $this->getEntityManager()->getRepository('RegistryBundle:System');
 
         $stmt = $this->getEntityManager()
             ->getConnection()

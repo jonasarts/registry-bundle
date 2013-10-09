@@ -41,7 +41,7 @@ class RegistryManager
         //$em = $this->getDoctrine()->getManager();
         $em = $this->getEntityManager();
 
-        $entity = $em->getRepository('jaRegistryBundle:Registry')->findOneBy(array('userid' => $userid, 'registrykey' => $registrykey, 'name' => $name));
+        $entity = $em->getRepository('RegistryBundle:Registry')->findOneBy(array('userid' => $userid, 'registrykey' => $registrykey, 'name' => $name));
 
         if ($entity) {
             $em->remove($entity);
@@ -60,14 +60,14 @@ class RegistryManager
 
         // find own key
         if ($userid != 0) {
-            $entity = $em->getRepository('jaRegistryBundle:Registry')->findOneBy(array('userid' => $userid, 'registrykey' => $registrykey, 'name' => $name));
+            $entity = $em->getRepository('RegistryBundle:Registry')->findOneBy(array('userid' => $userid, 'registrykey' => $registrykey, 'name' => $name));
         } else {
             $entity = NULL;
         }
 
         if (!$entity) {
             // find default key
-            $entity = $em->getRepository('jaRegistryBundle:Registry')->findOneBy(array('userid' => 0, 'registrykey' => $registrykey, 'name' => $name));
+            $entity = $em->getRepository('RegistryBundle:Registry')->findOneBy(array('userid' => 0, 'registrykey' => $registrykey, 'name' => $name));
         }
 
         if ($entity) {
@@ -218,7 +218,7 @@ class RegistryManager
         //$em = $this->getDoctrine()->getManager();
         $em = $this->getEntityManager();
 
-        $entity = $em->getRepository('jaRegistryBundle:Registry')->findOneBy(array('userid' => $userid, 'registrykey' => $registrykey, 'name' => $name));
+        $entity = $em->getRepository('RegistryBundle:Registry')->findOneBy(array('userid' => $userid, 'registrykey' => $registrykey, 'name' => $name));
 
         if (!$entity) {
             $entity = new Registry();
@@ -257,7 +257,7 @@ class RegistryManager
     {
         $em = $this->getEntityManager();
 
-        $entities = $em->getRepository('jaRegistryBundle:Registry')->loadByPath($userid, $path);
+        $entities = $em->getRepository('RegistryBundle:Registry')->loadByPath($userid, $path);
 
         return new RegistryBag($entities);
     }
@@ -274,7 +274,7 @@ class RegistryManager
         //$em = $this->getDoctrine()->getManager();
         $em = $this->getEntityManager();
 
-        $entity = $em->getRepository('jaRegistryBundle:System')->findOneBy(array('systemkey' => $systemkey, 'name' => $name));
+        $entity = $em->getRepository('RegistryBundle:System')->findOneBy(array('systemkey' => $systemkey, 'name' => $name));
 
         if ($entity) {
             $em->remove($entity);
@@ -292,7 +292,7 @@ class RegistryManager
         $em = $this->getEntityManager();
 
         // find default key
-        $entity = $em->getRepository('jaRegistryBundle:System')->findOneBy(array('systemkey' => $systemkey, 'name' => $name));
+        $entity = $em->getRepository('RegistryBundle:System')->findOneBy(array('systemkey' => $systemkey, 'name' => $name));
 
         if ($entity) {
             switch($type) {
@@ -429,7 +429,7 @@ class RegistryManager
         //$em = $this->getDoctrine()->getManager();
         $em = $this->getEntityManager();
 
-        $entity = $em->getRepository('jaRegistryBundle:System')->findOneBy(array('systemkey' => $systemkey, 'name' => $name));
+        $entity = $em->getRepository('RegistryBundle:System')->findOneBy(array('systemkey' => $systemkey, 'name' => $name));
 
         if (!$entity) {
             $entity = new System();
@@ -452,7 +452,7 @@ class RegistryManager
     {
         $em = $this->getEntityManager();
 
-        $entities = $em->getRepository('jaRegistryBundle:System')->loadByPath($path);
+        $entities = $em->getRepository('RegistryBundle:System')->loadByPath($path);
 
         return new SystemBag($entities);
     }

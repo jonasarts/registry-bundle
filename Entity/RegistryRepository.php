@@ -15,13 +15,13 @@ class RegistryRepository extends EntityRepository
     public function findAllOrderedByRegistryKey()
     {
         return $this->getEntityManager()
-        ->createQuery('SELECT r FROM jaRegistryBundle:Registry r ORDER BY r.registrykey ASC, r.name ASC')
+        ->createQuery('SELECT r FROM RegistryBundle:Registry r ORDER BY r.registrykey ASC, r.name ASC')
         ->getResult();
     }
     
     public function findAllWhere($column, $operator, $value)
     {
-        $repository = $this->getEntityManager()->getRepository('jaRegistryBundle:Registry');
+        $repository = $this->getEntityManager()->getRepository('RegistryBundle:Registry');
         
         $query = $repository->createQueryBuilder('r')
         ->where('r.'.$column.' '.$operator.' :param1')
@@ -39,7 +39,7 @@ class RegistryRepository extends EntityRepository
      */
     public function findByPath($userid, $path)
     {
-        $repository = $this->getEntityManager()->getRepository('jaRegistryBundle:Registry');
+        $repository = $this->getEntityManager()->getRepository('RegistryBundle:Registry');
         
         $query = $repository->createQueryBuilder('r')
         ->where('r.userid = :param1 AND r.registrykey LIKE :param2')
@@ -57,7 +57,7 @@ class RegistryRepository extends EntityRepository
      */
     public function loadByPath($userid, $path)
     {
-        $repository = $this->getEntityManager()->getRepository('jaRegistryBundle:Registry');
+        $repository = $this->getEntityManager()->getRepository('RegistryBundle:Registry');
         
         /*
         select * from

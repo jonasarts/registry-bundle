@@ -27,9 +27,9 @@ class RegistryController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
-        //$entities = $em->getRepository('jaRegistryBundle:Registry')->findAll();
-        $entities = $em->getRepository('jaRegistryBundle:Registry')->findAllOrderedByRegistryKey();
-        //$entities = $em->getRepository('jaRegistryBundle:Registry')->findAllWhere('type', '=', 'bln');
+        //$entities = $em->getRepository('RegistryBundle:Registry')->findAll();
+        $entities = $em->getRepository('RegistryBundle:Registry')->findAllOrderedByRegistryKey();
+        //$entities = $em->getRepository('RegistryBundle:Registry')->findAllWhere('type', '=', 'bln');
         
         return array(
             'entities' => $entities,
@@ -39,7 +39,7 @@ class RegistryController extends Controller
     /** Displays a form to create a new Registry entity.
      *
      * @Route("/new", name="registry_new")
-     * @Template("jaRegistryBundle:Registry:edit.html.twig")
+     * @Template("RegistryBundle:Registry:edit.html.twig")
      */
     public function newAction()
     {
@@ -58,7 +58,7 @@ class RegistryController extends Controller
      * 
      * @Route("/create", name="registry_create")
      * @Method("post")
-     * @Template("jaRegistryBundle:Registry:edit.html.twig")
+     * @Template("RegistryBundle:Registry:edit.html.twig")
      */
     public function createAction()
     {
@@ -90,13 +90,13 @@ class RegistryController extends Controller
      * Displays a form to edit a Registry entity.
      * 
      * @Route("/edit/{id}", name="registry_edit")
-     * @Template("jaRegistryBundle:Registry:edit.html.twig")
+     * @Template("RegistryBundle:Registry:edit.html.twig")
      */
     public function editAction($id)
     {
         $em = $this->getDoctrine()->getManager();
 
-        $entity = $em->getRepository('jaRegistryBundle:Registry')->find($id);
+        $entity = $em->getRepository('RegistryBundle:Registry')->find($id);
 
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find Registry entity.');
@@ -116,13 +116,13 @@ class RegistryController extends Controller
      * 
      * @Route("/update/{id}", name="registry_update")
      * @Method("post")
-     * @Template("jaRegistryBundle:Registry:edit.html.twig") 
+     * @Template("RegistryBundle:Registry:edit.html.twig") 
      */
     public function updateAction($id)
     {
         $em = $this->getDoctrine()->getEntityManager();
         
-        $entity = $em->getRepository('jaRegistryBundle:Registry')->find($id);
+        $entity = $em->getRepository('RegistryBundle:Registry')->find($id);
         
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find Registry entity.');
@@ -160,7 +160,7 @@ class RegistryController extends Controller
         
         $em = $this->getDoctrine()->getEntityManager();
         
-        $entity = $em->getRepository('jaRegistryBundle:Registry')->find($id);
+        $entity = $em->getRepository('RegistryBundle:Registry')->find($id);
         
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find Registry entity.');

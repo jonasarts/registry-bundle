@@ -27,9 +27,9 @@ class SystemController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
-        //$entities = $em->getRepository('jaRegistryBundle:System')->findAll();
-        $entities = $em->getRepository('jaRegistryBundle:System')->findAllOrderedBySystemKey();
-        //$entities = $em->getRepository('jaRegistryBundle:System')->findAllWhere('type', '<>', 'bln');
+        //$entities = $em->getRepository('RegistryBundle:System')->findAll();
+        $entities = $em->getRepository('RegistryBundle:System')->findAllOrderedBySystemKey();
+        //$entities = $em->getRepository('RegistryBundle:System')->findAllWhere('type', '<>', 'bln');
         
         return array(
             'entities' => $entities,
@@ -39,7 +39,7 @@ class SystemController extends Controller
     /** Displays a form to create a new System entity.
      *
      * @Route("/new", name="system_new")
-     * @Template("jaRegistryBundle:System:edit.html.twig")
+     * @Template("RegistryBundle:System:edit.html.twig")
      */
     public function newAction()
     {
@@ -58,7 +58,7 @@ class SystemController extends Controller
      * 
      * @Route("/create", name="system_create")
      * @Method("post")
-     * @Template("jaRegistryBundle:System:edit.html.twig")
+     * @Template("RegistryBundle:System:edit.html.twig")
      */
     public function createAction()
     {
@@ -90,13 +90,13 @@ class SystemController extends Controller
      * Displays a form to edit a System entity.
      * 
      * @Route("/edit/{id}", name="system_edit")
-     * @Template("jaRegistryBundle:System:edit.html.twig")
+     * @Template("RegistryBundle:System:edit.html.twig")
      */
     public function editAction($id)
     {
         $em = $this->getDoctrine()->getManager();
 
-        $entity = $em->getRepository('jaRegistryBundle:System')->find($id);
+        $entity = $em->getRepository('RegistryBundle:System')->find($id);
 
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find System entity.');
@@ -116,13 +116,13 @@ class SystemController extends Controller
      * 
      * @Route("/update/{id}", name="system_update")
      * @Method("post")
-     * @Template("jaRegistryBundle:System:edit.html.twig") 
+     * @Template("RegistryBundle:System:edit.html.twig") 
      */
     public function updateAction($id)
     {
         $em = $this->getDoctrine()->getEntityManager();
         
-        $entity = $em->getRepository('jaRegistryBundle:System')->find($id);
+        $entity = $em->getRepository('RegistryBundle:System')->find($id);
         
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find System entity.');
@@ -160,7 +160,7 @@ class SystemController extends Controller
         
         $em = $this->getDoctrine()->getEntityManager();
         
-        $entity = $em->getRepository('jaRegistryBundle:System')->find($id);
+        $entity = $em->getRepository('RegistryBundle:System')->find($id);
         
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find System entity.');
