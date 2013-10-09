@@ -6,10 +6,10 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
- * ja\RegistryBundle\Entity\System
+ * jonasarts\Bundle\RegistryBundle\Entity\System
  *
  * @ORM\Table(name="system")
- * @ORM\Entity(repositoryClass="ja\RegistryBundle\Entity\SystemRepository")
+ * @ORM\Entity(repositoryClass="jonasarts\Bundle\RegistryBundle\Entity\SystemRepository")
  * @UniqueEntity({"systemkey", "name"})
  */
 class System
