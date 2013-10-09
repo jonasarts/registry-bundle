@@ -147,7 +147,7 @@ class RegistryManager
         $result = $this->RegistryReadDefault($userid, $registrykey, $name, $type, null);    
 
         if ($result == null) { // type of result is set to correct type, don't use ===
-            $root = __DIR__.'/../../../';
+            $root = __DIR__.'/../../../../../../';
             $yaml = Yaml::parse($root.'app/config/'.'registry.yml');
             
             if (is_array($yaml) && array_key_exists($registrykey.'/'.$name, $yaml['registry'])) {
@@ -371,7 +371,7 @@ class RegistryManager
         $result = $this->SystemReadDefault($systemkey, $name, $type, null); 
 
         if ($result == null) { // type of result is set to correct type, don't use ===
-            $root = __DIR__.'/../../../';
+            $root = __DIR__.'/../../../../../../';
             $yaml = Yaml::parse($root.'app/config/'.'registry.yml');
             
             if (is_array($yaml) && array_key_exists($systemkey.'/'.$name, $yaml['system'])) {
