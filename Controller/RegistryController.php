@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the Registry bundle package.
+ *
+ * (c) Jonas Hauser <symfony@jonasarts.com>
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
 namespace jonasarts\Bundle\RegistryBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -12,7 +21,7 @@ use jonasarts\Bundle\RegistryBundle\Form\Type\RegistryType;
 /**
  * Registry controller.
  *
- * @Route("/registry")
+ * @Route("/_registry")
  */
 class RegistryController extends Controller
 {

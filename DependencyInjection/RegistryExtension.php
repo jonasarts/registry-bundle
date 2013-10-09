@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the Registry bundle package.
+ *
+ * (c) Jonas Hauser <symfony@jonasarts.com>
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
 namespace jonasarts\Bundle\RegistryBundle\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -12,7 +21,7 @@ use Symfony\Component\DependencyInjection\Loader;
  *
  * To learn more see {@link http://symfony.com/doc/current/cookbook/bundles/extension.html}
  */
-class jaRegistryExtension extends Extension
+class RegistryExtension extends Extension
 {
     /**
      * {@inheritDoc}
