@@ -157,7 +157,8 @@ class RegistryManager
 
         if ($result == null) { // type of result is set to correct type, don't use ===
             $root = __DIR__.'/../../../../../../';
-            $yaml = Yaml::parse($root.'app/config/'.'registry.yml');
+            $filename = $root.'app/config/'.'registry.yml'; // this must be optimized !!!
+            $yaml = Yaml::parse($filename);
             
             if (is_array($yaml) && array_key_exists($registrykey.'/'.$name, $yaml['registry'])) {
                 $result = $yaml['registry'][$registrykey.'/'.$name];
@@ -381,7 +382,8 @@ class RegistryManager
 
         if ($result == null) { // type of result is set to correct type, don't use ===
             $root = __DIR__.'/../../../../../../';
-            $yaml = Yaml::parse($root.'app/config/'.'registry.yml');
+            $filename = $root.'app/config/'.'registry.yml'; // this must be optimized !!!
+            $yaml = Yaml::parse($filename);
             
             if (is_array($yaml) && array_key_exists($systemkey.'/'.$name, $yaml['system'])) {
                 $result = $yaml['system'][$systemkey.'/'.$name];
