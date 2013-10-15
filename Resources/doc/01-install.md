@@ -38,6 +38,16 @@ public function registerBundles()
 }
 ```
 
+And register the RegistryManager as a service in *app/config/config.yml*:
+
+```yaml
+services:
+    // ...
+    registry_manager:
+        class: jonasarts\Bundle\RegistryBundle\RegistryManager
+        arguments: [ @doctrine.orm.entity_manager ]
+```
+
 ## Create the default key/name-values
 
 This is **optional**, but highly recommended.
