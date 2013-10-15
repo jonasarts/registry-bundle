@@ -8,7 +8,7 @@ This bundle provides a key-value data store, persisted by the symfony entity man
 Installation
 ------------
 
-All the installation instructions are located in the [documentation](https://github.com/jonasarts/registry-bundle/resources/doc/index.md).
+All the installation instructions are located in the [documentation](https://github.com/jonasarts/registry-bundle/blob/master/Resources/doc/index.md).
 
 License
 -------
