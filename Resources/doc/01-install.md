@@ -1,7 +1,7 @@
 Setting up the bundle
 =====================
 
-1. Install the jonasarts/registry-bundle with composer
+## Install the jonasarts/registry-bundle with composer
 
 First add the bundle to your composer.json file: 
 
@@ -22,7 +22,7 @@ Then run composer.phar:
 $ php composer.phar install
 ```
 
-2. Enable the bundle
+## Enable the bundle
 
 Finally, enable the bundle in the kernel:
 
@@ -38,7 +38,7 @@ public function registerBundles()
 }
 ```
 
-3. Create the registry default key-values (optional, but recommended)
+## Create the registry default key-values (optional, but recommended)
 
 If you wish to use a central place to store all default values, create the file app/config/registry.yml:
 
@@ -60,6 +60,6 @@ system:
 
 Or you provide the required default values by the registry manager api calls.
 
-4. That's it!
+## That's it
 
 Check out the docs for information on how to use the bundle! [Return to the index.](index.md)
