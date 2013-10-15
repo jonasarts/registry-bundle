@@ -1,7 +1,7 @@
 Setting up the bundle
 =====================
 
-## Install the jonasarts/registry-bundle with composer
+## Install the bundle
 
 First add the bundle to your composer.json file: 
 
@@ -38,9 +38,10 @@ public function registerBundles()
 }
 ```
 
-## Create the registry default key-values (optional, but recommended)
+## Create the default key/name-values
 
-If you wish to use a central place to store all default values, create the file app/config/registry.yml:
+This is **optional**, but highly recommended.
+If you wish to use a central place to store all default values, create the file *app/config/registry.yml*:
 
 ```yaml
 registry:
