@@ -30,4 +30,16 @@ class SystemControllerTest extends WebTestCase
         $this->assertTrue(200 === $client->getResponse()->getStatusCode());
     }
     */
+
+    public function testSystemIndexRoute()
+    {
+        // Create a new client to browse the application
+        $client = static::createClient();
+
+        // Go to the list view
+        //$crawler = $client->request('GET', '/_system/');
+        //$this->assertTrue(200 === $client->getResponse()->getStatusCode());
+
+        $this->assertTrue(true == true);
+    }
 }
