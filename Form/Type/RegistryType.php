@@ -16,8 +16,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 use Symfony\Component\Validator\Constraints\Collection;
 use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Validator\Constraints\MinLength;
-use Symfony\Component\Validator\Constraints\MaxLength;
+use Symfony\Component\Validator\Constraints\Length;
 
 class RegistryType extends AbstractType
 {
@@ -31,7 +30,7 @@ class RegistryType extends AbstractType
         ->add('registrykey', 'text', array(
             'constraints' => array(
                 new NotBlank(),
-                new MaxLength(255),
+                new Length(array("max" => 255)),
             ),
             'required' => true,
             'label' => 'Registry Key',
@@ -39,7 +38,7 @@ class RegistryType extends AbstractType
         ->add('name', 'text', array(
             'constraints' => array(
                 new NotBlank(),
-                new MaxLength(255),
+                new Length(array("max" => 255)),
             ),
             'required' => true,
         ))

@@ -24,7 +24,11 @@ $ php composer.phar install
 
 ## Enable the bundle
 
-Finally, enable the bundle in the kernel:
+You have two choices to enable the bundle. You can either enable the bundle in the kernel or just register the service in the config.
+
+### Enable the bundle via the kernel
+
+Enable the bundle in the kernel:
 
 ```php
 // app/AppKernel.php
@@ -47,6 +51,41 @@ services:
         class: jonasarts\Bundle\RegistryBundle\RegistryManager
         arguments: [ @doctrine.orm.entity_manager ]
 ```
+
+To use the RegistryController, register also the routes in *app/config/routing.yml*:
+
+```yaml
+ja_registry:
+    resource: "@RegistryBundle/Controller/"
+    type:     annotation
+    prefix:   /
+```
+
+This will generate two routes to manage the registry keys: ``_registry`` and ``_system``.
+
+### Enable the service via the config
+
+You don't need to enable the bundle in *app/AppKernel.php*. Just register the service in *app/config/config.yml* like above.
+
+Additionally, you need to register the entities for the entity manager in *app/config/config.yml*:
+
+```yml
+doctrine:
+    // ...
+
+    orm:
+        auto_generate_proxy_classes: %kernel.debug%
+        auto_mapping: true
+        mappings:
+            registry-bundle:
+                type: annotation
+                dir: %kernel.root_dir%/../vendor/jonasarts/registry-bundle/jonasarts/Bundle/RegistryBundle/Entity
+                prefix: jonasarts\Bundle\RegistryBundle\Entity
+                alias: RegistryBundle
+                is_bundle: false
+```
+
+Do not use the RegistryController. (Do not register the RegistryController routes in *app/config/routing.yml*.)
 
 ## Create the default key/name-values
 
