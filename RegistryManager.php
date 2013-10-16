@@ -22,7 +22,10 @@ use Symfony\Component\Yaml\Yaml;
 
 class RegistryManager
 {
-    private $em;
+    private $em; // entity manager
+    private $yaml; // registry default key-name/values yaml file
+    
+    private $has_yaml; // boolean; use yaml default values?
 
     private function getEntityManager()
     {
@@ -36,6 +39,14 @@ class RegistryManager
     public function __construct(EntityManager $entityManager)
     {
         $this->em = $entityManager;
+
+        $root = __DIR__.'/../../../../../../'; // todo: how to optimize this
+        $filename = $root.'app/config/registry.yml'; // todo: perhaps this should be customizable
+        $this->has_yaml = file_exists($filename);
+
+        if ($this->has_yaml) {
+            $this->yaml = Yaml::parse($filename);
+        }
     }
 
     /**
@@ -155,13 +166,9 @@ class RegistryManager
     {
         $result = $this->RegistryReadDefault($userid, $registrykey, $name, $type, null);    
 
-        if ($result == null) { // type of result is set to correct type, don't use ===
-            $root = __DIR__.'/../../../../../../';
-            $filename = $root.'app/config/'.'registry.yml'; // this must be optimized !!!
-            $yaml = Yaml::parse($filename);
-            
-            if (is_array($yaml) && array_key_exists($registrykey.'/'.$name, $yaml['registry'])) {
-                $result = $yaml['registry'][$registrykey.'/'.$name];
+        if (($result == null) && ($this->has_yaml)) { // type of result is set to correct type, don't use ===
+            if (is_array($this->yaml) && array_key_exists($registrykey.'/'.$name, $this->yaml['registry'])) {
+                $result = $this->yaml['registry'][$registrykey.'/'.$name];
             }
 
             switch ($type) {
@@ -380,13 +387,9 @@ class RegistryManager
     {
         $result = $this->SystemReadDefault($systemkey, $name, $type, null); 
 
-        if ($result == null) { // type of result is set to correct type, don't use ===
-            $root = __DIR__.'/../../../../../../';
-            $filename = $root.'app/config/'.'registry.yml'; // this must be optimized !!!
-            $yaml = Yaml::parse($filename);
-            
-            if (is_array($yaml) && array_key_exists($systemkey.'/'.$name, $yaml['system'])) {
-                $result = $yaml['system'][$systemkey.'/'.$name];
+        if (($result == null) && ($this->has_yaml)) { // type of result is set to correct type, don't use ===
+            if (is_array($this->yaml) && array_key_exists($systemkey.'/'.$name, $this->yaml['system'])) {
+                $result = $this->yaml['system'][$systemkey.'/'.$name];
             }
 
             switch ($type) {
