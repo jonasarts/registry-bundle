@@ -22,7 +22,7 @@ Following methods are present on the RegistryManager class:
 * i, int, integer
 * s, str, string
 * f, flt, float
-* d, dat, date, t, tim, time
+* d, dat, date, t, tim, time  
 \<Value\> can be of any type which \<TypeIdentifier\> can designate.
 
 Retrieve the RegistryManager service like any other symfony service:
@@ -199,3 +199,5 @@ Delete a key
     $rm = $this->get('registry_manager');
     $rm->SystemDelete('App/Test', 'TestDate', 'd');
 ```
+
+[Return to the index.](index.md)
