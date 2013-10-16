@@ -5,25 +5,25 @@ The RegistryManager is a service to handle all registry related operations.
 This covers writing, reading and deleting values from or to the registry storage.
 
 Following methods are present on the RegistryManager class:
-- RegistryWrite(<UserID>, <KeyString>, <NameString>, <TypeIdentifier>, <Value>);
-- RegistryRead(<UserID>, <KeyString>, <NameString>, <TypeIdentifier>);
-- RegistryReadDefault(<UserID>, <KeyString>, <NameString>, <TypeIdentifier>, <DefaultValue>);
-- RegistryDelete(<UserID>, <KeyString>, <NameString>, <TypeIdentifier>);
-- SystemWrite(<KeyString>, <NameString>, <TypeIdentifier>, <Value>);
-- SystemRead(<KeyString>, <NameString>, <TypeIdentifier>);
-- SystemReadDefault(<KeyString>, <NameString>, <TypeIdentifier>, <DefaultValue>);
-- SystemDelete(<KeyString>, <NameString>, <TypeIdentifier>);
+- RegistryWrite(\<UserID\>, \<KeyString\>, \<NameString\>, \<TypeIdentifier\>, \<Value\>);
+- RegistryRead(\<UserID\>, \<KeyString\>, \<NameString\>, \<TypeIdentifier\>);
+- RegistryReadDefault(\<UserID\>, \<KeyString\>, \<NameString\>, \<TypeIdentifier\>, \<DefaultValue\>);
+- RegistryDelete(\<UserID\>, \<KeyString\>, \<NameString\>, \<TypeIdentifier\>);
+- SystemWrite(\<KeyString\>, \<NameString\>, \<TypeIdentifier\>, \<Value\>);
+- SystemRead(\<KeyString\>, \<NameString\>, \<TypeIdentifier\>);
+- SystemReadDefault(\<KeyString\>, \<NameString\>, \<TypeIdentifier\>, \<DefaultValue\>);
+- SystemDelete(\<KeyString\>, \<NameString\>, \<TypeIdentifier\>);
 
-<UserID> must be an integer type value.
-<KeyString> is a string value; best practice is to use them like namespaces.
-<NameString> is a string value; use this string like a name.
-<TypeIdentifier> is one of the following identifier strings:
-    * b, bln, boolean
-    * i, int, integer
-    * s, str, string
-    * f, flt, float
-    * d, dat, date, t, tim, time
-<Value> can be of any type which <TypeIdentifier> can designate.
+\<UserID\> must be an integer type value.  
+\<KeyString\> is a string value; best practice is to use them like namespaces.  
+\<NameString\> is a string value; use this string like a name.  
+\<TypeIdentifier\> is one of the following identifier strings:
+* b, bln, boolean
+* i, int, integer
+* s, str, string
+* f, flt, float
+* d, dat, date, t, tim, time
+\<Value\> can be of any type which \<TypeIdentifier\> can designate.
 
 Retrieve the RegistryManager service like any other symfony service:
 
