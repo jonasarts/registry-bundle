@@ -65,9 +65,17 @@ This will generate two routes to manage the registry keys: ``_registry`` and ``_
 
 ### Enable the service via the config
 
-You don't need to enable the bundle in *app/AppKernel.php*. Just register the service in *app/config/config.yml* like above.
+You don't need to enable the bundle in *app/AppKernel.php*. You only need to register the service in *app/config/config.yml*:
 
-Additionally, you need to register the entities for the entity manager in *app/config/config.yml*:
+```yaml
+services:
+    // ...
+    registry_manager:
+        class: jonasarts\Bundle\RegistryBundle\RegistryManager
+        arguments: [ @doctrine.orm.entity_manager ]
+```
+
+Additionaly, you have to register the entities for the entity manager in *app/config/config.yml*:
 
 ```yml
 doctrine:
