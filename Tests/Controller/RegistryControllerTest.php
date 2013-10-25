@@ -11,9 +11,10 @@
 
 namespace jonasarts\Bundle\RegistryBundle\Tests\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+//use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-class RegistryControllerTest extends WebTestCase
+//class RegistryControllerTest extends WebTestCase
+class RegistryControllerTest extends \PHPUnit_Framework_TestCase
 {
     /*
     public function testCompleteScenario()

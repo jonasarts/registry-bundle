@@ -12,6 +12,7 @@ First add the bundle to your composer.json file:
         // ...
         "jonasarts/registry-bundle": "dev-master"
     },
+    "minimum-stability": "alpha",
     // ...
 }
 ```

@@ -95,66 +95,77 @@ class RegistryManager
                 case 'i':
                 case 'int':
                 case 'integer':
-                return (integer)$entity->getValue();
-                break;
+                    return (integer)$entity->getValue();
+                    break;
                 case 'b':
                 case 'bln':
                 case 'boolean':
-                return (boolean)$entity->getValue();
-                break;
+                    return (boolean)$entity->getValue();
+                    break;
                 case 's':
                 case 'str':
                 case 'string':
-                return (string)$entity->getValue();
-                break;
+                    return (string)$entity->getValue();
+                    break;
                 case 'f':
                 case 'flt':
                 case 'float':
-                return (float)$entity->getValue();
-                break;
+                    return (float)$entity->getValue();
+                    break;
                 case 'd':
                 case 'dat':
                 case 'date':
                 case 't':
                 case 'tim':
                 case 'time':
-                return strtotime($entity->getValue());
-                break;
+                    $value = $entity->getValue(); // this always is a string
+                    if (is_numeric($value)) { // don't use is_int here
+                        return (integer)$value;
+                    } else {
+                        return strtotime($value);
+                    }
+                    break;
                 default:
-                return $entity->getValue();
+                    return $entity->getValue();
             }
         } else {
             switch ($type) {
                 case 'i':
                 case 'int':
                 case 'integer':
-                return (integer)$default;
-                break;
+                    return (integer)$default;
+                    break;
                 case 'b':
                 case 'bln':
                 case 'boolean':
-                return (boolean)$default;
-                break;
+                    return (boolean)$default;
+                    break;
                 case 's':
                 case 'str':
                 case 'string':
-                return (string)$default;
-                break;
+                    return (string)$default;
+                    break;
                 case 'f':
                 case 'flt':
                 case 'float':
-                return (float)$default;
-                break;
+                    return (float)$default;
+                    break;
                 case 'd':
                 case 'dat':
                 case 'date':
                 case 't':
                 case 'tim':
                 case 'time':
-                return $default;
-                break;
+                    if ($default instanceof \DateTime) {
+                        return $default;
+                    } else if (is_int($default)) {
+                        return $default;
+                    } else if (is_string($default)) {
+                        return strtotime($default);
+                    }
+                    break;
                 default:
-                return $default;
+                    return $default;
             }
         }
     }
@@ -202,8 +213,13 @@ class RegistryManager
                 case 't':
                 case 'tim':
                 case 'time':
-                    if (strtotime($result) !== false)
-                        $result = 0;
+                    if ($result instanceof \DateTime) {
+                        // nothing to do
+                    } else if (is_int($result)) {
+                        // nothing to do
+                    } else if (is_string($result)) {
+                        $result = strtotime($result);
+                    }
                     break;
                 default:
                     // nothing
@@ -256,6 +272,10 @@ class RegistryManager
                 if ($value instanceof \DateTime) {
                     // convert DateTime to string
                     $value = $value->format("c");
+                } else if (is_int($value)) {
+                    // nothing to do
+                } else if (is_string($value)) {
+                    // nothing to do
                 }
                 $entity->setValue($value);
                 break;
@@ -316,66 +336,77 @@ class RegistryManager
                 case 'i':
                 case 'int':
                 case 'integer':
-                return (integer)$entity->getValue();
-                break;
+                    return (integer)$entity->getValue();
+                    break;
                 case 'b':
                 case 'bln':
                 case 'boolean':
-                return (boolean)$entity->getValue();
-                break;
+                    return (boolean)$entity->getValue();
+                    break;
                 case 's':
                 case 'str':
                 case 'string':
-                return (string)$entity->getValue();
-                break;
+                    return (string)$entity->getValue();
+                    break;
                 case 'f':
                 case 'flt':
                 case 'float':
-                return (float)$entity->getValue();
-                break;
+                    return (float)$entity->getValue();
+                    break;
                 case 'd':
                 case 'dat':
                 case 'date':
                 case 't':
                 case 'tim':
                 case 'time':
-                return strtotime($entity->getValue());
-                break;
+                    $value = $entity->getValue(); // this always is a string
+                    if (is_numeric($value)) { // don't use is_int here
+                        return (integer)$value;
+                    } else {
+                        return strtotime($value);
+                    }
+                    break;
                 default:
-                return $entity->getValue();
+                    return $entity->getValue();
             }
         } else {
             switch ($type) {
                 case 'i':
                 case 'int':
                 case 'integer':
-                return (integer)$default;
-                break;
+                    return (integer)$default;
+                    break;
                 case 'b':
                 case 'bln':
                 case 'boolean':
-                return (boolean)$default;
-                break;
+                    return (boolean)$default;
+                    break;
                 case 's':
                 case 'str':
                 case 'string':
-                return (string)$default;
-                break;
+                    return (string)$default;
+                    break;
                 case 'f':
                 case 'flt':
                 case 'float':
-                return (float)$default;
-                break;
+                    return (float)$default;
+                    break;
                 case 'd':
                 case 'dat':
                 case 'date':
                 case 't':
                 case 'tim':
                 case 'time':
-                return $default;
-                break;
+                    if ($default instanceof \DateTime) {
+                        return $default;
+                    } else if (is_int($default)) {
+                        return $default;
+                    } else if (is_string($default)) {
+                        return strtotime($default);
+                    }
+                    break;
                 default:
-                return $default;
+                    return $default;
             }
         }
     }
@@ -423,8 +454,13 @@ class RegistryManager
                 case 't':
                 case 'tim':
                 case 'time':
-                    if (strtotime($result) !== false)
-                        $result = 0;
+                    if ($result instanceof \DateTime) {
+                        // nothing to do
+                    } else if (is_int($result)) {
+                        // nothing to do
+                    } else if (is_string($result)) {
+                        $result = strtotime($result);
+                    }
                     break;
                 default:
                     // nothing
@@ -453,7 +489,26 @@ class RegistryManager
         }
 
         $entity->setType($type);
-        $entity->setValue($value);
+        switch ($type) {
+            case 'd':
+            case 'dat':
+            case 'date':
+            case 't':
+            case 'tim':
+            case 'time':
+                if ($value instanceof \DateTime) {
+                    // convert DateTime to string
+                    $value = $value->format("c");
+                } else if (is_int($value)) {
+                    // nothing to do
+                } else if (is_string($value)) {
+                    // nothing to do
+                }
+                $entity->setValue($value);
+                break;
+            default:
+                $entity->setValue($value);
+        }
 
         $em->persist($entity);
         $em->flush();
