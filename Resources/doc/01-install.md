@@ -10,9 +10,9 @@ First add the bundle to your composer.json file:
     // ...
     "require": {
         // ...
-        "jonasarts/registry-bundle": "dev-master"
+        "jonasarts/registry-bundle": "1.0.*"
     },
-    "minimum-stability": "alpha",
+    "minimum-stability": "stable",
     // ...
 }
 ```
