@@ -17,7 +17,9 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 /**
  * jonasarts\Bundle\RegistryBundle\Entity\Registry
  *
- * @ORM\Table(name="registry")
+ * @ORM\Table(name="registry",
+ *      uniqueConstraints={@ORM\UniqueConstraint(name="uix_userid_registrykey_name", columns={"userid", "registrykey", "name"})}
+ * )
  * @ORM\Entity(repositoryClass="jonasarts\Bundle\RegistryBundle\Entity\RegistryRepository")
  * @UniqueEntity({"userid", "registrykey", "name"})
  */
