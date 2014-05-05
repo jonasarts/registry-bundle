@@ -15,7 +15,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use jonasarts\Bundle\RegistryBundle\Entity\Registry;
+use jonasarts\Bundle\RegistryBundle\Entity\Registry as RegKey;
 use jonasarts\Bundle\RegistryBundle\Form\Type\RegistryType;
 
 /**
@@ -52,7 +52,7 @@ class RegistryController extends Controller
      */
     public function newAction()
     {
-        $entity = new Registry();
+        $entity = new RegKey();
         $form = $this->createForm(new RegistryType(), $entity);
         
         return array(
@@ -71,7 +71,7 @@ class RegistryController extends Controller
      */
     public function createAction()
     {
-        $entity = new Registry();
+        $entity = new RegKey();
         
         $request = $this->getRequest();
         
@@ -186,7 +186,7 @@ class RegistryController extends Controller
      */
     private function delete($userid, $registrykey, $name)
     {
-        $rm = $this->get('registry_manager');
+        $rm = $this->get('registry');
         $rm->RegistryDelete($userid, $registrykey, $name);
     }
 
@@ -195,7 +195,7 @@ class RegistryController extends Controller
      */
     public function read($userid, $registrykey, $name, $type)
     {
-        $rm = $this->get('registry_manager');
+        $rm = $this->get('registry');
         return $rm->ReadRegistry($userid, $registrykey, $name, $type);
     }
     
@@ -204,7 +204,7 @@ class RegistryController extends Controller
      */
     public function write($userid, $registrykey, $name, $type, $value)
     {
-        $rm = $this->get('registry_manager');
+        $rm = $this->get('registry');
         $rm->RegistryWrite($userid, $registrykey, $name, $type, $value);
     }
 

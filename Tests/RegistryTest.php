@@ -22,7 +22,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
  * The tests below must be executed in order
  * (to maintain write before delete operations).
  */
-class RegistryManagerTest extends WebTestCase
+class RegistryTest extends WebTestCase
 {
     /*
      * @var \Doctrine\ORM\EntityManager
@@ -47,7 +47,7 @@ class RegistryManagerTest extends WebTestCase
             ->getManager()
         ;
         $this->rm = static::$kernel->getContainer()
-            ->get('registry_manager');
+            ->get('registry');
     }
 
     // registry tests

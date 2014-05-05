@@ -15,7 +15,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use jonasarts\Bundle\RegistryBundle\Entity\System;
+use jonasarts\Bundle\RegistryBundle\Entity\System as SysKey;
 use jonasarts\Bundle\RegistryBundle\Form\Type\SystemType;
 
 /**
@@ -52,7 +52,7 @@ class SystemController extends Controller
      */
     public function newAction()
     {
-        $entity = new System();
+        $entity = new SysKey();
         $form = $this->createForm(new SystemType(), $entity);
         
         return array(
@@ -71,7 +71,7 @@ class SystemController extends Controller
      */
     public function createAction()
     {
-        $entity = new System();
+        $entity = new SysKey();
         
         $request = $this->getRequest();
         
@@ -186,7 +186,7 @@ class SystemController extends Controller
      */
     private function delete($systemkey, $name)
     {
-        $rm = $this->get('registry_manager');
+        $rm = $this->get('registry');
         $rm->SystemDelete($systemkey, $name);
     }
     
@@ -195,7 +195,7 @@ class SystemController extends Controller
      */
     public function Read($systemkey, $name, $type)
     {
-        $rm = $this->get('registry_manager');
+        $rm = $this->get('registry');
         return $rm->SystemRead($systemkey, $name, $type);
     }
     
@@ -204,7 +204,7 @@ class SystemController extends Controller
      */
     public function Write($systemkey, $name, $type, $value)
     {
-        $rm = $this->get('registry_manager');
+        $rm = $this->get('registry');
         $rm->SystemWrite($systemkey, $name, $type, $value);
     }
 

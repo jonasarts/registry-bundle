@@ -29,9 +29,44 @@ class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root('ja_registry');
 
-        // Here you should define the parameters that are allowed to
-        // configure your bundle. See the documentation linked above for
-        // more information on that topic.
+        $rootNode
+            ->children()
+                ->arrayNode('globals')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        // mode
+                        ->enumNode('mode')
+                            ->isRequired()
+                            ->cannotBeEmpty()
+                            ->values(array('doctrine', 'redis'))
+                        ->end()
+                        // default registry keys yaml file
+                        ->scalarNode('defaultkeys')
+                            ->isRequired()
+                            ->cannotBeEmpty()
+                        ->end()
+                        // key name delimiter (for registry keys concatenation)
+                        ->scalarNode('delimiter')
+                            ->cannotBeEmpty()
+                            ->defaultValue('/')
+                        ->end()
+                    ->end()
+                ->end()
+                ->arrayNode('redis')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        // prefix
+                        ->scalarNode('prefix')
+                            ->defaultValue('registry')
+                        ->end()
+                        // (prefix) key name delimiter (for redis keys concatenation)
+                        ->scalarNode('delimiter')
+                            ->cannotBeEmpty()
+                            ->defaultValue(':')
+                        ->end()
+                    ->end()
+                ->end()
+            ->end();
 
         return $treeBuilder;
     }

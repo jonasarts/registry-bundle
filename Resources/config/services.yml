@@ -1,7 +1,7 @@
 parameters:
-    jonasarts.registry_manager.class: jonasarts\Bundle\RegistryBundle\RegistryManager
+    jonasarts.registry.class: jonasarts\Bundle\RegistryBundle\Services\Registry
 
 services:
-    registry_manager:
-        class: %jonasarts.registry_manager.class%
-        arguments: [ @doctrine.orm.entity_manager ]
+    registry:
+        class: %jonasarts.registry.class%
+        arguments: [ @service_container, @doctrine.orm.entity_manager ]

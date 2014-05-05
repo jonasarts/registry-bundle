@@ -1,10 +1,10 @@
 Using the bundle
 ================
 
-The RegistryManager is a service to handle all registry related operations.
+The Registry (aka RegistryManager) is a service to handle all registry related operations.
 This covers writing, reading and deleting values from or to the registry storage.
 
-Following methods are present on the RegistryManager class:
+Following methods are present on the Registry class:
 - RegistryWrite(\<UserID\>, \<KeyString\>, \<NameString\>, \<TypeIdentifier\>, \<Value\>);
 - RegistryRead(\<UserID\>, \<KeyString\>, \<NameString\>, \<TypeIdentifier\>);
 - RegistryReadDefault(\<UserID\>, \<KeyString\>, \<NameString\>, \<TypeIdentifier\>, \<DefaultValue\>);
@@ -13,6 +13,16 @@ Following methods are present on the RegistryManager class:
 - SystemRead(\<KeyString\>, \<NameString\>, \<TypeIdentifier\>);
 - SystemReadDefault(\<KeyString\>, \<NameString\>, \<TypeIdentifier\>, \<DefaultValue\>);
 - SystemDelete(\<KeyString\>, \<NameString\>, \<TypeIdentifier\>);
+
+For lazy programmers, there are shortcuts to the above methods:
+- rw() -> RegistryWrite()
+- rr() -> RegistryRead()
+- rrd() -> RegistryReadDefault()
+- rd() -> RegistryDelete()
+- sw() -> SystemWrite()
+- sr() -> SystemRead()
+- srd() -> SystemReadDefault()
+- sd() -> SystemDelete()
 
 \<UserID\> must be an integer type value.  
 \<KeyString\> is a string value; best practice is to use them like namespaces.  
@@ -26,19 +36,43 @@ Following methods are present on the RegistryManager class:
 
 \<Value\> can be of any type which \<TypeIdentifier\> can designate.
 
-Retrieve the RegistryManager service like any other symfony service:
+Retrieve the Registry service like any other symfony service:
 
 ```php
-    $rm = $this->get('registry_manager');
+    $rm = $this->get('registry');
 ```
 
 In the php code examples, ``$this`` referes to a controller.
 
+Configuration Methods
+=====================
+
+registry.setMode(integer)
+-------------------------
+
+To switch the database engine used by the registry service, call `setMode` with following
+constants from *jonasarts\Bundle\RegistryBundle\Entity\RegistryMode* namespace
+- RegistryMode::MODE_DOCTRINE = 1
+- RegistryMode::MODE_REDIS = 2
+
+To query the current mode, there are following methods present
+- registry.isMode(integer) -> boolean
+- registry.isModeDoctrine() -> boolean
+- registry.isModeRedis() -> boolean
+
+registry.setDefaultKeysEnabled(boolean)
+---------------------------------------
+
+To enable/disable the default keys behavior of the registry service, use
+`setDefaultKeysEnabled`.
+Be aware that `setMode` also modifies the default keys behavior. On switching to
+- `RegistryMode::MODE_DOCTRINE` the default keys will get enabled
+- `RegistryMode::MODE_REDIS` the default keys will get disabled
+
 Registry
 ========
 
-The Registry functions provide a convenient way to 
-store and retrieve values per user.
+The Registry methods provide a convenient way to store and retrieve values per user.
 
 Write a user specific key
 -------------------------
@@ -48,7 +82,7 @@ Following examples write some registry keys
 for the User with ID 1.
 
 ```php
-    $rm = $this->get('registry_manager');
+    $rm = $this->get('registry');
     $rm->RegistryWrite(1, 'App/Test', 'TestInteger', 'i', 1);
     $rm->RegistryWrite(1, 'App/Test', 'TestBoolean', 'b', true);
     $rm->RegistryWrite(1, 'App/Test', 'TestString', 's', 'test');
@@ -61,7 +95,7 @@ the key will not be writen and an already older present user specific
 registry key will be removed.
 
 ```php
-    $rm = $this->get('registry_manager');
+    $rm = $this->get('registry');
     $rm->RegistryWrite(0, 'App/Test', 'TestInteger', 'i', 1); // writes a user-0 key (more info further below)
     $rm->RegistryWrite(1, 'App/Test', 'TestInteger', 'i', 100); // writes a user specific key
     $rm->RegistryWrite(1, 'App/Test', 'TestInteger', 'i', 1); // instead of writing a user specific key, this removes the before created user specific key (with value 100) to fall back on the user-0 key
@@ -77,7 +111,7 @@ all users in different installations of your application.
 The handling of user-0 keys is absolutely the same as the user specific ones.
 
 ```php
-    $rm = $this->get('registry_manager');
+    $rm = $this->get('registry');
     $rm->RegistryWrite(0, 'App/Test', 'TestInteger', 'i', 2);
     $rm->RegistryWrite(0, 'App/Test', 'TestBoolean', 'b', false);
     $rm->RegistryWrite(0, 'App/Test', 'TestString', 's', 'one test more');
@@ -105,7 +139,7 @@ The retrieval hierarchy is:
 * programatic default key
 
 ```php
-    $rm = $this->get('registry_manager');
+    $rm = $this->get('registry');
     $value = $rm->RegistryRead(10, 'App/Test', 'TestString', 's');
 ```
 
@@ -115,17 +149,17 @@ The following example reads a registry key for user 11 and defines a default val
 'I am the default string'.
 
 ```php
-    $rm = $this->get('registry_manager');
+    $rm = $this->get('registry');
     $value = $rm->RegistryReadDefault(11, 'App/Test', 'TestString', 's', 'I am the default string');
 ```
 
 Read a set of keys
 ------------------
 
-tbd
+tbd / this currently will not work with redis database engine
 
 ```php
-    $rm = $this->get('registry_manager');
+    $rm = $this->get('registry');
 
     $rb = $rm->getRegistryBag(1, 'App/Test/%');
 
@@ -140,7 +174,7 @@ Delete a key
 To remove a registry key (user specific or user-0), just call RegistryDelete.
 
 ```php
-    $rm = $this->get('registry_manager');
+    $rm = $this->get('registry');
     $rm->RegistryDelete(1, 'App/Test', 'TestString', 's');
 ```
 
@@ -148,8 +182,7 @@ To remove a registry key (user specific or user-0), just call RegistryDelete.
 System
 ======
 
-The System functions provide a convenient way to 
-store and retrieve values which are not related to users.
+The System functions provide a convenient way to store and retrieve values which are not related to users.
 
 This is commonly used for application settings.
 
@@ -162,7 +195,7 @@ Write a key
 -----------
 
 ```php
-    $rm = $this->get('registry_manager');
+    $rm = $this->get('registry');
     $rm->SystemWrite('App/Test', 'TestInteger', 'i', 1);
     $rm->SystemWrite('App/Test', 'TestBoolean', 'b', true);
     $rm->SystemWrite('App/Test', 'TestString', 's', 'eins');
@@ -174,7 +207,7 @@ Read a key
 ----------
 
 ```php
-    $rm = $this->get('registry_manager');
+    $rm = $this->get('registry');
         
     $value = $rm->SystemRead('App/Test', 'TestString', 's');
 
@@ -185,7 +218,7 @@ Read a set of keys
 ------------------
 
 ```php
-    $rm = $this->get('registry_manager');
+    $rm = $this->get('registry');
 
     $sb = $rm->getSystemBag('App/Test/%');
 
@@ -197,7 +230,7 @@ Delete a key
 ------------
 
 ```php
-    $rm = $this->get('registry_manager');
+    $rm = $this->get('registry');
     $rm->SystemDelete('App/Test', 'TestDate', 'd');
 ```
 
