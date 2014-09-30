@@ -24,11 +24,14 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
  */
 class RegistryServiceTest extends WebTestCase
 {
-    /*
+    /**
      * @var \Doctrine\ORM\EntityManager
      */
     private $em;
 
+    /**
+     * @var Registry
+     */
     private $rm;
 
     const _user = 2;
@@ -85,6 +88,26 @@ class RegistryServiceTest extends WebTestCase
         $r = $this->rm->RegistryReadDefault(0, 'key', 'name_dat', 'dat', strtotime('2013-10-16'));
 
         $this->assertEquals(strtotime('2013-10-16'), $r);
+    }
+
+    public function testRegistryReadDefaultNull()
+    {
+        $r = $this->rm->RegistryReadDefault(0, 'key', 'name_null', 'int', null);
+
+        $this->assertEquals(null, $r);
+    }
+
+    public function testRegistryReadOnce()
+    {
+        $this->rm->RegistryWrite(0, 'once_key', 'name_bln', 'bln', true);
+
+        $r = $this->rm->RegistryReadOnce(0, 'once_key', 'name_bln', 'bln');
+
+        $this->assertEquals($r, true);
+
+        $r = $this->rm->RegistryRead(0, 'once_key', 'name_bln', 'bln');
+
+        $this->assertEquals($r, false);
     }
 
     public function testRegistryWriteBln()
@@ -312,6 +335,31 @@ class RegistryServiceTest extends WebTestCase
         $this->assertEquals($r, strtotime('now'));
     }
 
+    public function testGetRegistryItems()
+    {
+        $this->rm->RegistryWrite(self::_user, 'key/path1', 'name1', 'int', self::_int);
+        $this->rm->RegistryWrite(self::_user, 'key/path1/sub', 'name1', 'int', self::_int + 1);
+        $this->rm->RegistryWrite(self::_user, 'key/path2', 'name2', 'str', self::_str);
+        
+        $a = $this->rm->getRegistryItems(self::_user, 'key\/path1');
+
+        $this->assertEquals(2, count($a));
+
+        foreach ($a as $entity) {
+            if ($entity->getRegistryKey() == 'key/path1') {
+                $this->assertEquals(self::_int, $entity->getValue());
+                $this->assertEquals('int', $entity->getType());
+            } else if ($entity->getRegistryKey() == 'key/path1/sub') {
+                $this->assertEquals(self::_int + 1, $entity->getValue());
+                $this->assertEquals('int', $entity->getType());
+            }
+        }
+
+        $this->rm->RegistryDelete(self::_user, 'key/path1', 'name1', 'int');
+        $this->rm->RegistryDelete(self::_user, 'key/path1/sub', 'name1', 'int');
+        $this->rm->RegistryDelete(self::_user, 'key/path2', 'name2', 'str');
+    }
+
     //
     // system tests
     //
@@ -351,13 +399,33 @@ class RegistryServiceTest extends WebTestCase
         $this->assertEquals(strtotime('2013-10-16'), $r);
     }
 
+    public function testSystemReadDefaultNull()
+    {
+        $r = $this->rm->systemReadDefault('key', 'name_null', 'int', null);
+
+        $this->assertEquals(null, $r);
+    }
+
+    public function testSystemReadOnce()
+    {
+        $this->rm->SystemWrite('once_key', 'name_bln', 'bln', true);
+
+        $r = $this->rm->SystemReadOnce('once_key', 'name_bln', 'bln');
+
+        $this->assertEquals(true, $r);
+
+        $r = $this->rm->SystemRead('once_key', 'name_bln', 'bln');
+
+        $this->assertEquals(false, $r);
+    }
+
     public function testSystemWriteBln()
     {
         $this->rm->SystemWrite('key', 'name_bln', 'bln', self::_bln);
 
         $r = $this->rm->SystemRead('key', 'name_bln', 'bln');
 
-        $this->assertEquals($r, self::_bln);
+        $this->assertEquals(self::_bln, $r);
     }
 
     public function testSystemDeleteBln()
@@ -366,7 +434,7 @@ class RegistryServiceTest extends WebTestCase
 
         $r = $this->rm->SystemReadDefault('key', 'name_bln', 'bln', !self::_bln);
 
-        $this->assertEquals($r, !self::_bln);
+        $this->assertEquals(!self::_bln, $r);
     }
 
     public function testSystemWriteInt()
@@ -375,7 +443,7 @@ class RegistryServiceTest extends WebTestCase
 
         $r = $this->rm->SystemRead('key', 'name_int', 'int');
 
-        $this->assertEquals($r, self::_int);
+        $this->assertEquals(self::_int, $r);
     }
 
     public function testSystemDeleteInt()
@@ -384,7 +452,7 @@ class RegistryServiceTest extends WebTestCase
 
         $r = $this->rm->SystemReadDefault('key', 'name_int', 'int', self::_int + 1);
 
-        $this->assertEquals($r, self::_int + 1);
+        $this->assertEquals(self::_int + 1, $r);
     }
 
     public function testSystemWriteStr()
@@ -393,7 +461,7 @@ class RegistryServiceTest extends WebTestCase
 
         $r = $this->rm->SystemRead('key', 'name_str', 'str');
 
-        $this->assertEquals($r, self::_str);
+        $this->assertEquals(self::_str, $r);
     }
 
     public function testSystemDeleteStr()
@@ -402,7 +470,7 @@ class RegistryServiceTest extends WebTestCase
 
         $r = $this->rm->SystemReadDefault('key', 'name_str', 'str', self::_str . 'default');
 
-        $this->assertEquals($r, self::_str . 'default');
+        $this->assertEquals(self::_str . 'default', $r);
     }
 
     public function testSystemWriteFlt()
@@ -411,7 +479,7 @@ class RegistryServiceTest extends WebTestCase
 
         $r = $this->rm->SystemRead('key', 'name_flt', 'flt');
 
-        $this->assertEquals($r, self::_flt);
+        $this->assertEquals(self::_flt, $r);
     }
 
     public function testSystemDeleteFlt()
@@ -420,7 +488,7 @@ class RegistryServiceTest extends WebTestCase
 
         $r = $this->rm->SystemReadDefault('key', 'name_flt', 'flt', self::_flt - 0.1);
 
-        $this->assertEquals($r, self::_flt - 0.1);
+        $this->assertEquals(self::_flt - 0.1, $r);
     }
 
     public function testSystemWriteDat()
@@ -429,7 +497,7 @@ class RegistryServiceTest extends WebTestCase
 
         $r = $this->rm->SystemRead('key', 'name_dat', 'dat');
 
-        $this->assertEquals($r, strtotime(self::_dat));
+        $this->assertEquals(strtotime(self::_dat), $r);
     }
 
     public function testSystemDeleteDat()
@@ -438,8 +506,33 @@ class RegistryServiceTest extends WebTestCase
 
         $r = $this->rm->SystemReadDefault('key', 'name_dat', 'dat', strtotime('1990-01-01'));
 
-        $this->assertEquals($r, strtotime('1990-01-01'));
-    }   
+        $this->assertEquals(strtotime('1990-01-01'), $r);
+    }
+
+    public function testGetSystemItems()
+    {
+        $this->rm->SystemWrite('key/path1', 'name1', 'int', self::_int);
+        $this->rm->SystemWrite('key/path1/sub', 'name1', 'int', self::_int + 1);
+        $this->rm->SystemWrite('key/path2', 'name2', 'str', self::_str);
+        
+        $a = $this->rm->getSystemItems('key\/path1');
+
+        $this->assertEquals(2, count($a));
+
+        foreach ($a as $entity) {
+            if ($entity->getSystemKey() == 'key/path1') {
+                $this->assertEquals(self::_int, $entity->getValue());
+                $this->assertEquals('int', $entity->getType());
+            } else if ($entity->getSystemKey() == 'key/path1/sub') {
+                $this->assertEquals(self::_int + 1, $entity->getValue());
+                $this->assertEquals('int', $entity->getType());
+            }
+        }
+
+        $this->rm->SystemDelete('key/path1', 'name1', 'int');
+        $this->rm->SystemDelete('key/path1/sub', 'name1', 'int');
+        $this->rm->SystemDelete('key/path2', 'name2', 'str');
+    }
 
     protected function tearDown()
     {

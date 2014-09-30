@@ -60,18 +60,29 @@ class System
 
     /**
      * Populate system entity with given values.
+     * 
+     * @param integer $id
+     * @param string  $registrykey
+     * @param string  $name
+     * @param string  $value
+     * @return Registry
      */
-    public function LoadByValues($id, $userid, $systemkey, $name, $type, $value)
+    public function LoadByValues($id, $systemkey, $name, $type, $value)
     {
         $this->id = $id;
         $this->systemkey = $systemkey;
         $this->name = $name;
         $this->type = $type;
         $this->value = $value;
+
+        return $this;
     }
     
     /**
      * Populate system entity with given array values.
+     * 
+     * @param array $row
+     * @return System
      */
     public function LoadByArray(array $row)
     {
@@ -80,6 +91,8 @@ class System
         $this->name = $row['name'];
         $this->type = $row['type'];
         $this->value = $row['value'];
+
+        return $this;
     }
 
     /**

@@ -66,6 +66,13 @@ class Registry
 
     /**
      * Populate registry entity with given values.
+     * 
+     * @param integer $id
+     * @param integer $userid
+     * @param string  $registrykey
+     * @param string  $name
+     * @param string  $value
+     * @return Registry
      */
     public function LoadByValues($id, $userid, $registrykey, $name, $type, $value)
     {
@@ -75,10 +82,15 @@ class Registry
         $this->name = $name;
         $this->type = $type;
         $this->value = $value;
+
+        return $this;
     }
 
     /**
      * Populate registry entity with given array values.
+     * 
+     * @param array $row
+     * @return Registry
      */
     public function LoadByArray(array $row)
     {
@@ -88,6 +100,8 @@ class Registry
         $this->name = $row['name'];
         $this->type = $row['type'];
         $this->value = $row['value'];
+
+        return $this;
     }
 
     /**
@@ -217,6 +231,8 @@ class Registry
 
     /**
      * Dump registry entitiy to string
+     * 
+     * @return string
      */
     public function __toString()
     {

@@ -42,6 +42,8 @@ class Registry
     private $redis_prefix; // string
     private $redis_key_name_delimiter; // char
 
+    const SYSTEM_HASH_KEY = 'system'; // redis hash key part for system keys
+
     /**
      * Constructor
      */
@@ -69,7 +71,11 @@ class Registry
             $this->setDefaultKeysEnabled(true); // sets $use_yaml
         }
 
-        if (trim($this->redis_prefix) != '') {
+        if (trim($this->redis_prefix) == '') {
+            // empty prefix is not allowed
+            $this->redis_prefix = 'registry' . $this->redis_key_name_delimiter;
+        } else {
+            // append the key-name delimiter
             $this->redis_prefix .= $this->redis_key_name_delimiter;
         }
     }
@@ -160,15 +166,17 @@ class Registry
      * 
      * @param integer $userid
      * @param string $registrykey
-     * @param string $string
+     * @param string $name
+     * @param string $type
      * @return boolean
      */
-    public function RegistryDelete($userid, $registrykey, $name)
+    public function RegistryDelete($userid, $registrykey, $name, $type)
     {
         if ($this->isModeRedis()) {
-            return $this->redis->delete($this->redis_prefix . (string)$userid . $this->redis_key_name_delimiter . $registrykey . $this->redis_key_name_delimiter . $name) > 0;
+            //return $this->redis->delete($this->redis_prefix . (string)$userid . $this->redis_key_name_delimiter . $registrykey . $this->redis_key_name_delimiter . $name) > 0;
+            return $this->redis->hDel($this->redis_prefix . (string)$userid, $registrykey . $this->redis_key_name_delimiter . $name . $this->redis_key_name_delimiter . $type) > 0;
         } else if ($this->isModeDoctrine()) {
-            $entity = $this->registry->findOneBy(array('userid' => $userid, 'registrykey' => $registrykey, 'name' => $name));
+            $entity = $this->registry->findOneBy(array('userid' => $userid, 'registrykey' => $registrykey, 'name' => $name, 'type' => $type));
 
             if ($entity) {
                 $this->em->remove($entity);
@@ -184,9 +192,9 @@ class Registry
      * 
      * @see RegistryDelete
      */
-    public function rd($uid, $rk, $n)
+    public function rd($uid, $rk, $n, $t)
     {
-        return $this->RegistryDelete($uid, $rk, $n);
+        return $this->RegistryDelete($uid, $rk, $n, $t);
     }
 
     /** 
@@ -204,11 +212,13 @@ class Registry
     {
         if ($this->isModeRedis()) {
             // find own key
-            $value = $this->redis->get($this->redis_prefix . (string)$userid . $this->redis_key_name_delimiter . $registrykey . $this->redis_key_name_delimiter . $name);
+            //$value = $this->redis->get($this->redis_prefix . (string)$userid . $this->redis_key_name_delimiter . $registrykey . $this->redis_key_name_delimiter . $name);
+            $value = $this->redis->hGet($this->redis_prefix . (string)$userid, $registrykey . $this->redis_key_name_delimiter . $name . $this->redis_key_name_delimiter . $type);
 
             if ($value === false) {
                 // find default key
-                $value = $this->redis->get($this->redis_prefix . '0' . $this->redis_key_name_delimiter . $registrykey . $this->redis_key_name_delimiter . $name);
+                //$value = $this->redis->get($this->redis_prefix . '0' . $this->redis_key_name_delimiter . $registrykey . $this->redis_key_name_delimiter . $name);
+                $value = $this->redis->hGet($this->redis_prefix . '0', $registrykey . $this->redis_key_name_delimiter . $name . $this->redis_key_name_delimiter . $type);
             }
         } else if ($this->isModeDoctrine()) {
             // find own key
@@ -269,6 +279,9 @@ class Registry
                     return $value;
             }
         } else {
+            // special default null handling
+            if (is_null($default)) return $default;
+            // regular
             switch ($type) {
                 case 'i':
                 case 'int':
@@ -333,7 +346,7 @@ class Registry
     {
         $result = $this->RegistryReadDefault($userid, $registrykey, $name, $type, null);    
 
-        if (($result == null) && ($this->use_yaml)) { // type of result is set to correct type, don't use ===
+        if (($result === null) && ($this->use_yaml)) {
             if (is_array($this->yaml) && array_key_exists($registrykey.$this->key_name_delimiter.$name, $this->yaml['registry'])) {
                 $result = $this->yaml['registry'][$registrykey.$this->key_name_delimiter.$name];
             }
@@ -397,6 +410,32 @@ class Registry
     }
 
     /**
+     * Read registry key from database and delete it immediately.
+     * 
+     * @param integer $userid
+     * @param string $registrykey
+     * @param string $string
+     * @param string $type
+     * @return mixed
+     */
+    public function RegistryReadOnce($userid, $registrykey, $name, $type)
+    {
+        $r = $this->RegistryRead($userid, $registrykey, $name, $type);
+
+        $this->RegistryDelete($userid, $registrykey, $name, $type);
+
+        return $r;
+    }
+
+    /**
+     * Short method to RegistryReadOnce.
+     */
+    public function rro($uid, $rk, $n, $t)
+    {
+        return $this->registryReadOnce($uid, $rk, $n, $t);
+    }
+
+    /**
      * Write registry key to database.
      * 
      * @param integer $userid
@@ -442,7 +481,8 @@ class Registry
 
         // not default key, insert / update
         if ($this->isModeRedis()) {
-            return $this->redis->set($this->redis_prefix . (string)$userid . $this->redis_key_name_delimiter . $registrykey . $this->redis_key_name_delimiter . $name, $value);
+            //return $this->redis->set($this->redis_prefix . (string)$userid . $this->redis_key_name_delimiter . $registrykey . $this->redis_key_name_delimiter . $name, $value);
+            return $this->redis->hSet($this->redis_prefix . (string)$userid, $registrykey . $this->redis_key_name_delimiter . $name . $this->redis_key_name_delimiter . $type, $value);
         } else if ($this->isModeDoctrine()) {
             $entity = $this->registry->findOneBy(array('userid' => $userid, 'registrykey' => $registrykey, 'name' => $name));
 
@@ -475,12 +515,64 @@ class Registry
 
     /**
      * Read / Load a set of registry keys from database.
+     * 
+     * Important: This only works with Doctrine database type!
+     * 
+     * @param integer $userid
+     * @param string  $path
+     * @return RegistryBag|Null
      */
     public function getRegistryBag($userid, $path)
     {
+        if ($this->isModeRedis()) {
+            return null;
+        }
+
         $entities = $this->registry->loadByPath($userid, $path);
 
         return new RegistryBag($entities);
+    }
+
+    /**
+     * Read a set of registry keys and return them as array.
+     * 
+     * @param integer $userid
+     * @param string  $path
+     * @return array
+     */
+    public function getRegistryItems($userid, $path)
+    {
+        $entities = array();
+
+        if ($this->isModeRedis()) {
+            // redis load
+            $array = $this->redis->hGetAll($this->redis_prefix . (string)$userid);
+            // filter the result array
+            foreach (array_keys($array) as $key) {
+                if (preg_match('/^'.$path.'/', $key)) {
+                    // $key = key; key:name:type
+                    // $value = $array[$key]; value
+                    
+                    // explode key by redis_key_name_delimiter to get key:name:type
+                    $s = explode($this->redis_key_name_delimiter, $key);
+
+                    if (count($s) <> 3) {
+                        throw new \Exception('Redis key format is not correct! (key'.$this->redis_key_name_delimiter.'name'.$this->redis_key_name_delimiter.'name)');
+                    }
+
+                    $entity = new RegKey();
+                    $entity->loadByValues(0, $userid, $s[0], $s[1], $s[2], $array[$key]);
+                    $entities[] = $entity;
+                }
+            }
+            // cleanup
+            unset($array);
+        } else if ($this->isModeDoctrine()) {
+            // doctrine load
+            $entities = $this->registry->loadByPath($userid, $path);
+        }
+
+        return $entities;
     }
 
     /**
@@ -491,15 +583,17 @@ class Registry
      * Delete system key from database.
      * 
      * @param string $systemkey
-     * @param string $string
+     * @param string $name
+     * @param string $type
      * @return boolean
      */
-    public function SystemDelete($systemkey, $name)
+    public function SystemDelete($systemkey, $name, $type)
     {
         if ($this->isModeRedis()) {
-            return $this->redis->delete($this->redis_prefix . $systemkey . $this->redis_key_name_delimiter . $name) > 0;
+            //return $this->redis->delete($this->redis_prefix . $systemkey . $this->redis_key_name_delimiter . $name) > 0;
+            return $this->redis->hDel($this->redis_prefix . self::SYSTEM_HASH_KEY, $systemkey . $this->redis_key_name_delimiter . $name . $this->redis_key_name_delimiter . $type) > 0;
         } else if ($this->isModeDoctrine()) {
-            $entity = $this->system->findOneBy(array('systemkey' => $systemkey, 'name' => $name));
+            $entity = $this->system->findOneBy(array('systemkey' => $systemkey, 'name' => $name, 'type' => $type));
 
             if ($entity) {
                 $this->em->remove($entity);
@@ -515,9 +609,9 @@ class Registry
      * 
      * @see SystemDelete
      */
-    public function sd($sk, $n)
+    public function sd($sk, $n, $t)
     {
-        return $this->SystemDelete($sk, $n);
+        return $this->SystemDelete($sk, $n, $t);
     }
 
     /**
@@ -533,7 +627,8 @@ class Registry
     public function SystemReadDefault($systemkey, $name, $type, $default)
     {
         if ($this->isModeRedis()) {
-            $value = $this->redis->get($this->redis_prefix . $systemkey . $this->redis_key_name_delimiter . $name);    
+            //$value = $this->redis->get($this->redis_prefix . $systemkey . $this->redis_key_name_delimiter . $name);    
+            $value = $this->redis->hGet($this->redis_prefix . self::SYSTEM_HASH_KEY, $systemkey . $this->redis_key_name_delimiter . $name . $this->redis_key_name_delimiter . $type);    
         } else if ($this->isModeDoctrine()) {
             // find default key
             $entity = $this->system->findOneBy(array('systemkey' => $systemkey, 'name' => $name));
@@ -584,6 +679,9 @@ class Registry
                     return $value;
             }
         } else {
+            // special default null handling
+            if (is_null($default)) return $default;
+            // regular
             switch ($type) {
                 case 'i':
                 case 'int':
@@ -647,7 +745,7 @@ class Registry
     {
         $result = $this->SystemReadDefault($systemkey, $name, $type, null); 
 
-        if (($result == null) && ($this->use_yaml)) { // type of result is set to correct type, don't use ===
+        if (($result === null) && ($this->use_yaml)) {
             if (is_array($this->yaml) && array_key_exists($systemkey.$this->key_name_delimiter.$name, $this->yaml['system'])) {
                 $result = $this->yaml['system'][$systemkey.$this->key_name_delimiter.$name];
             }
@@ -711,6 +809,31 @@ class Registry
     }
 
     /**
+     * Read system key from database and delete it immediately.
+     * 
+     * @param string $registrykey
+     * @param string $string
+     * @param string $type
+     * @return mixed
+     */
+    public function SystemReadOnce($systemkey, $name, $type)
+    {
+        $r = $this->SystemRead($systemkey, $name, $type);
+        
+        $this->SystemDelete($systemkey, $name, $type);
+
+        return $r;
+    }
+
+    /**
+     * Short method to SystemReadOnce.
+     */
+    public function sro($sk, $n, $t)
+    {
+        return $this->SystemReadOnce($sk, $n, $t);
+    }
+
+    /**
      * Write system key to database.
      * 
      * @param string $systemkey
@@ -744,7 +867,8 @@ class Registry
 
         // insert / update
         if ($this->isModeRedis()) {
-            return $this->redis->set($this->redis_prefix . $systemkey . $this->redis_key_name_delimiter . $name, $value);
+            //return $this->redis->set($this->redis_prefix . $systemkey . $this->redis_key_name_delimiter . $name, $value);
+            return $this->redis->hSet($this->redis_prefix . self::SYSTEM_HASH_KEY, $systemkey . $this->redis_key_name_delimiter . $name . $this->redis_key_name_delimiter . $type, $value);
         } else if ($this->isModeDoctrine()) {
             $entity = $this->system->findOneBy(array('systemkey' => $systemkey, 'name' => $name));
 
@@ -776,11 +900,64 @@ class Registry
 
     /**
      * Read / Load a set of system keys from database.
+     * 
+     * Important: This only works with Doctrine database type!
+     * 
+     * @param string  $path
+     * @return RegistryBag|Null
      */
     public function getSystemBag($path)
     {
+        if ($this->isModeRedis()) {
+            return null;
+        }
+
         $entities = $this->system->loadByPath($path);
 
         return new SystemBag($entities);
+    }
+
+    /**
+     * Read a set of registry keys and return them as array.
+     * 
+     * Important: This works with Redis too, but can get very slow
+     * as all hash values must be retrieved to filter them by code.
+     * 
+     * @param string  $path
+     * @return array
+     */
+    public function getSystemItems($path)
+    {
+        $entities = array();
+
+        if ($this->isModeRedis()) {
+            // redis load
+            $array = $this->redis->hGetAll($this->redis_prefix . self::SYSTEM_HASH_KEY);
+            // filter the result array
+            foreach (array_keys($array) as $key) {
+                if (preg_match('/^'.$path.'/', $key)) {
+                    // $key = key; key:name:type
+                    // $value = $array[$key]; value
+
+                    // explode key by redis_key_name_delimiter to get key:name:type
+                    $s = explode($this->redis_key_name_delimiter, $key);
+
+                    if (count($s) <> 3) {
+                        throw new \Exception('Redis key format is not correct! (key'.$this->redis_key_name_delimiter.'name'.$this->redis_key_name_delimiter.'type)');
+                    }
+
+                    $entity = new SysKey();
+                    $entity->loadByValues(0, $s[0], $s[1], $s[2], $array[$key]);
+                    $entities[] = $entity;
+                }
+            }
+            // cleanup
+            unset($array);
+        } else if ($this->isModeDoctrine()) {
+            // doctrine load
+            $entities = $this->system->loadByPath($path);
+        }
+
+        return $entities;
     }
 }
