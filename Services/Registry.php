@@ -453,7 +453,7 @@ class Registry
             if ($result) {
                 if ($result == $value) {
                     // equals default value, delete own key
-                    return $this->RegistryDelete($userid, $registrykey, $name);
+                    return $this->RegistryDelete($userid, $registrykey, $name, $type);
                 }
             }
         }

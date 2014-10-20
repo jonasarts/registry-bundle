@@ -99,13 +99,17 @@ class RegistryServiceTest extends WebTestCase
 
     public function testRegistryReadOnce()
     {
+        // read once must remove the key after reading once
+
         $this->rm->RegistryWrite(0, 'once_key', 'name_bln', 'bln', true);
 
         $r = $this->rm->RegistryReadOnce(0, 'once_key', 'name_bln', 'bln');
 
         $this->assertEquals($r, true);
 
-        $r = $this->rm->RegistryRead(0, 'once_key', 'name_bln', 'bln');
+        $r = $this->rm->RegistryRead(0, 'once_key', 'name_bln', 'bln'); // key must be gone
+
+        // $this->rm->RegistryKeyExists(0, 'once_key', 'name_bln', 'bln') == false;
 
         $this->assertEquals($r, false);
     }
@@ -137,6 +141,9 @@ class RegistryServiceTest extends WebTestCase
     }
     */
 
+    /**
+     * @depends testRegistryWriteUserBln
+     */
     public function testRegistryDeleteUserBln()
     {
         $this->rm->RegistryDelete(self::_user, 'key', 'name_bln', 'bln');
@@ -146,6 +153,9 @@ class RegistryServiceTest extends WebTestCase
         $this->assertEquals($r, self::_bln);
     }
 
+    /**
+     * @depends testRegistryWriteBln
+     */
     public function testRegistryDeleteBln()
     {
         $this->rm->RegistryDelete(0, 'key', 'name_bln', 'bln');
@@ -182,6 +192,9 @@ class RegistryServiceTest extends WebTestCase
     }
     */
 
+    /**
+     * @depends testRegistryWriteUserInt
+     */
     public function testRegistryDeleteUserInt()
     {
         $this->rm->RegistryDelete(self::_user, 'key', 'name_int', 'int');
@@ -191,6 +204,9 @@ class RegistryServiceTest extends WebTestCase
         $this->assertEquals($r, self::_int);
     }
 
+    /**
+     * @depends testRegistryWriteInt
+     */
     public function testRegistryDeleteInt()
     {
         $this->rm->RegistryDelete(0, 'key', 'name_int', 'int');
@@ -227,6 +243,9 @@ class RegistryServiceTest extends WebTestCase
     }
     */
 
+    /**
+     * @depends testRegistryWriteUserStr
+     */
     public function testRegistryDeleteUserStr()
     {
         $this->rm->RegistryDelete(self::_user, 'key', 'name_str', 'str');
@@ -236,6 +255,9 @@ class RegistryServiceTest extends WebTestCase
         $this->assertEquals($r, self::_str);
     }
 
+    /**
+     * @depends testRegistryWriteStr
+     */
     public function testRegistryDeleteStr()
     {
         $this->rm->RegistryDelete(0, 'key', 'name_str', 'str');
@@ -272,6 +294,9 @@ class RegistryServiceTest extends WebTestCase
     }
     */
 
+    /**
+     * @depends testRegistryWriteUserFlt
+     */
     public function testRegistryDeleteUserFlt()
     {
         $this->rm->RegistryDelete(self::_user, 'key', 'name_flt', 'flt');
@@ -281,6 +306,9 @@ class RegistryServiceTest extends WebTestCase
         $this->assertEquals($r, self::_flt);
     }
 
+    /**
+     * @depends testRegistryWriteFlt
+     */
     public function testRegistryDeleteFlt()
     {
         $this->rm->RegistryDelete(0, 'key', 'name_flt', 'flt');
@@ -317,6 +345,9 @@ class RegistryServiceTest extends WebTestCase
     }
     */
 
+    /**
+     * @depends testRegistryWriteUserDat
+     */
     public function testRegistryDeleteUserDat()
     {
         $this->rm->RegistryDelete(self::_user, 'key', 'name_dat', 'dat');
@@ -326,6 +357,9 @@ class RegistryServiceTest extends WebTestCase
         $this->assertEquals($r, strtotime(self::_dat));
     }
 
+    /**
+     * @depends testRegistryWriteDat
+     */
     public function testRegistryDeleteDat()
     {
         $this->rm->RegistryDelete(0, 'key', 'name_dat', 'dat');
@@ -333,6 +367,28 @@ class RegistryServiceTest extends WebTestCase
         $r = $this->rm->RegistryReadDefault(0, 'key', 'name_dat', 'dat', strtotime('now'));
 
         $this->assertEquals($r, strtotime('now'));
+    }
+
+    public function testRegistryWriteUser0MatchingVale()
+    {
+        // if user-key-value equals user-0-value, the user-key-value must be deleted on write
+
+        $this->rm->RegistryWrite(0, 'key', 'name_int', 'int', self::_int); // user-0-value
+        $this->rm->RegistryWrite(1, 'key', 'name_int', 'int', self::_int+1); // user-key-value
+        
+        $r = $this->rm->RegistryRead(1, 'key', 'name_int', 'int');
+
+        $this->assertEquals($r, self::_int+1);
+
+        $this->rm->RegistryWrite(1, 'key', 'name_int', 'int', self::_int); // this must delete the user-key-value
+
+        $r = $this->rm->RegistryRead(1, 'key', 'name_int', 'int');
+
+        // $this-rm->RegistryKeyExists(1, 'key', 'name_int', 'int') == false;
+
+        $this->assertEquals($r, self::_int);
+
+        $this->rm->RegistryDelete(0, 'key', 'name_int', 'int');
     }
 
     public function testGetRegistryItems()
