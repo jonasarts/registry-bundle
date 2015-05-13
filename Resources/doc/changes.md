@@ -1,6 +1,21 @@
 CHANGE LOG
 ==========
 
+V 1.2.3
+-------
+
+- Fixed issue #9, RegistryRead() and SystemRead() validates the array loaded from registry.yml 
+
+V 1.2.2
+-------
+
+- Added RegistryKeyExists() and SystemKeyExists()
+
+V 1.2.1
+-------
+
+- Fixed issue #7, missing $type in RegistryWrite()
+
 V 1.2.0
 -------
 

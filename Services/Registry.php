@@ -65,10 +65,10 @@ class Registry
         // apply
         if ($mode == 'redis') {
             $this->setMode(RegistryMode::MODE_REDIS); // sets $mode & $key_name_delimiter
-            $this->setDefaultKeysEnabled(false); // sets $use_yaml
+            //$this->setDefaultKeysEnabled(false); // sets $use_yaml
         } else {
             $this->setMode(RegistryMode::MODE_DOCTRINE); // sets $mode & $key_name_delimiter
-            $this->setDefaultKeysEnabled(true); // sets $use_yaml
+            //$this->setDefaultKeysEnabled(true); // sets $use_yaml
         }
 
         if (trim($this->redis_prefix) == '') {
@@ -110,6 +110,14 @@ class Registry
     }
 
     /**
+     * @return boolean
+     */
+    public function hasYaml()
+    {
+        return $this->use_yaml;
+    }
+
+    /**
      * @param integer $mode
      * @return Registry
      */
@@ -131,6 +139,8 @@ class Registry
 
             $this->key_name_delimiter = $this->container->getParameter('registry.redis.delimiter');
         }
+
+        $this->setDefaultKeysEnabled($mode == RegistryMode::MODE_DOCTRINE);
 
         return $this;
     }
@@ -347,7 +357,7 @@ class Registry
         $result = $this->RegistryReadDefault($userid, $registrykey, $name, $type, null);    
 
         if (($result === null) && ($this->use_yaml)) {
-            if (is_array($this->yaml) && array_key_exists($registrykey.$this->key_name_delimiter.$name, $this->yaml['registry'])) {
+            if (is_array($this->yaml) && is_array($this->yaml['registry']) && array_key_exists($registrykey.$this->key_name_delimiter.$name, $this->yaml['registry'])) {
                 $result = $this->yaml['registry'][$registrykey.$this->key_name_delimiter.$name];
             }
 
@@ -746,7 +756,7 @@ class Registry
         $result = $this->SystemReadDefault($systemkey, $name, $type, null); 
 
         if (($result === null) && ($this->use_yaml)) {
-            if (is_array($this->yaml) && array_key_exists($systemkey.$this->key_name_delimiter.$name, $this->yaml['system'])) {
+            if (is_array($this->yaml) && is_array($this->yaml['system']) && array_key_exists($systemkey.$this->key_name_delimiter.$name, $this->yaml['system'])) {
                 $result = $this->yaml['system'][$systemkey.$this->key_name_delimiter.$name];
             }
 

@@ -107,9 +107,8 @@ class RegistryServiceTest extends WebTestCase
 
         $this->assertEquals($r, true);
 
-        $r = $this->rm->RegistryRead(0, 'once_key', 'name_bln', 'bln'); // key must be gone
-
-        // $this->rm->RegistryKeyExists(0, 'once_key', 'name_bln', 'bln') == false;
+        //$r = $this->rm->RegistryRead(0, 'once_key', 'name_bln', 'bln'); // key must be gone
+        $r = $this->rm->RegistryKeyExists(0, 'once_key', 'name_bln', 'bln');
 
         $this->assertEquals($r, false);
     }
@@ -382,11 +381,11 @@ class RegistryServiceTest extends WebTestCase
 
         $this->rm->RegistryWrite(1, 'key', 'name_int', 'int', self::_int); // this must delete the user-key-value
 
-        $r = $this->rm->RegistryRead(1, 'key', 'name_int', 'int');
+        //$r = $this->rm->RegistryRead(1, 'key', 'name_int', 'int');
+        $r = $this->rm->RegistryKeyExists(1, 'key', 'name_int', 'int');
 
-        // $this-rm->RegistryKeyExists(1, 'key', 'name_int', 'int') == false;
-
-        $this->assertEquals($r, self::_int);
+        //$this->assertEquals($r, self::_int);
+        $this->assertEquals($r, false);
 
         $this->rm->RegistryDelete(0, 'key', 'name_int', 'int');
     }

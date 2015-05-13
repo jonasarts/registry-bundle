@@ -126,6 +126,31 @@ To provide default values, you can either use the api (RegistryReadDefault)
 or use the registry.yml functionality. If no user key and no user-0 key is present,
 the declared default will be returned.
 
+A minimal registry.yml looks like this:
+
+```yaml
+registry:
+    ~
+system:
+    ~
+```
+
+Keys are added as 'paths'. Just combine the key and name together.
+
+```yaml
+registry:
+    App/RegistryKey/Name: Value
+system:
+    ~
+```
+
+```php
+    $rm = $this->get('registry');
+    $value = $rm->RegistryRead(10, 'App/RegistryKey', 'Name', 's');
+
+    // $value will hold 'Value' if no user-specific/user-0 value is stored in the database.
+```
+
 Read a key
 ----------
 
