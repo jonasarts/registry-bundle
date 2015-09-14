@@ -18,6 +18,21 @@ registry:
         delimiter:      ':'
 ```
 
+## Required for Redis Mode
+
+To use redis as database engine, you must install and configure the [SncRedisBundle](https://github.com/snc/SncRedisBundle).
+
+Configure the snc_redis client alias to 'registry' for the client to use for the registy operations.
+
+```yaml
+snc_redis:
+    clients:
+        default:
+            type: phpredis
+            alias: registry
+            dsn: redis://localhost
+``
+
 ## That's all
 
 [Return to the index.](index.md)

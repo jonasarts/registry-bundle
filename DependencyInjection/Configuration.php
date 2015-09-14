@@ -39,6 +39,7 @@ class Configuration implements ConfigurationInterface
                             ->isRequired()
                             ->cannotBeEmpty()
                             ->values(array('doctrine', 'redis'))
+                            ->defaultValue('doctrine')
                         ->end()
                         // default registry keys yaml file
                         ->scalarNode('defaultkeys')

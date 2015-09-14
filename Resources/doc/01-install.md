@@ -10,7 +10,7 @@ First add the bundle to your composer.json file:
     // ...
     "require": {
         // ...
-        "jonasarts/registry-bundle": "1.1.*"
+        "jonasarts/registry-bundle": "~1.2"
     },
     "minimum-stability": "stable",
     // ...
@@ -39,10 +39,10 @@ public function registerBundles()
 }
 ```
 
-To use the RegistryController, register also the routes in *app/config/routing.yml* (this is optional):
+To use the RegistryController, register also the routes in *app/config/routing.yml* or *app/config/routing_dev.yml* (this is optional and can only be used on the 'doctrine' mode registry keys):
 
 ```yaml
-ja_registry:
+_registry:
     resource: "@RegistryBundle/Controller/"
     type:     annotation
     prefix:   /

@@ -50,7 +50,8 @@ class RegistryServiceTest extends WebTestCase
             ->getManager()
         ;
         $this->rm = static::$kernel->getContainer()
-            ->get('registry');
+            ->get('registry')
+        ;
     }
 
     // registry tests
