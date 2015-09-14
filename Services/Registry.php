@@ -183,7 +183,7 @@ class Registry
     public function RegistryKeyExists($userid, $registrykey, $name, $type)
     {
         if ($this->isModeRedis()) {
-            return $this->redis->exists($this->redis_prefix . (string)$userid, $registrykey . $this->redis_key_name_delimiter . $name . $this->redis_key_name_delimiter . $type) > 0;
+            return $this->redis->hExists($this->redis_prefix . (string)$userid, $registrykey . $this->redis_key_name_delimiter . $name . $this->redis_key_name_delimiter . $type) > 0;
         } else if ($this->isModeDoctrine()) {
             $entity = $this->registry->findOneBy(array('userid' => $userid, 'registrykey' => $registrykey, 'name' => $name, 'type' => $type));
 
