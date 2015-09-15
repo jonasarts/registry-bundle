@@ -610,11 +610,22 @@ class Registry
      */
 
     /**
+     * Check system key in database.
+     * 
+     * @param string $systemkey
+     * @param string $name
+     * @param string $type
      * @return boolean
      */
-    public function SystemKeyExists()
+    public function SystemKeyExists($systemkey, $name, $type)
     {
-        return false;
+        if ($this->isModeRedis()) {
+            return $this->redis->hExists($this->redis_prefix . self::SYSTEM_HASH_KEY, $systemkey . $this->redis_key_name_delimiter . $name . $this->redis_key_name_delimiter . $type) > 0;
+        } else if ($this->isModeDoctrine()) {
+            $entity = $this->system->findOneBy(array('systemkey' => $systemkey, 'name' => $name, 'type' => $type));
+
+            return !is_null($entity);
+        }
     }
 
     /**

@@ -1,6 +1,11 @@
 CHANGE LOG
 ==========
 
+V 1.2.5
+-------
+
+- Fixed RegistryKeyExists() and SystemKeyExists()
+
 V 1.2.3
 -------
 
